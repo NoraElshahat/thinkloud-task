@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { mobileInfo } from './mobileInfo';
 import { useEffect, useState } from 'react';
 import BarChart from './bar-chart';
+import DonutChart from './donut-chart';
 
 export default function MainScreen() {
   const [mobiles, updateMobiles] = useState([]);
@@ -100,8 +101,9 @@ export default function MainScreen() {
             </tbody>
           </table>
         </div>
-        <div className="col-4">
+        <div className="col-4 mt-5 pt-5">
           <BarChart countArrayy={count} />
+          <DonutChart />
         </div>
       </div>
     </div>
