@@ -31,6 +31,7 @@ export default function AddMobile() {
             className="form-control mb-2"
             placeholder="Model"
             name="model"
+            required
             onChange={handleChang}
           />
           <input
