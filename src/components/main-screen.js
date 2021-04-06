@@ -8,15 +8,26 @@ export default function MainScreen() {
   const [mobiles, updateMobiles] = useState([]);
   const [model, updateModel] = useState('');
   const [brand, updateBrand] = useState([]);
-  const [count, updateCount] = useState();
+  const [countMobiles, updateCount] = useState({});
+  const [resultRoww, updateRes] = useState({});
+  const count = {};
   useEffect(() => {
     const mobiles = JSON.parse(localStorage.getItem('mobiles'));
-    updateMobiles(mobiles);
-    const countBasedOnYear = mobiles.filter((item) => {
-      return item.year == 2010;
-    }).length;
-    updateCount(countBasedOnYear);
+    if (mobiles) {
+      updateMobiles(mobiles);
+    } else {
+      updateMobiles([]);
+    }
+    if (mobiles) {
+      mobiles.forEach((element) => {
+        count[element.year] ? count[element.year]++ : (count[element.year] = 1);
+      });
+      updateCount(count);
+    } else {
+      updateCount({});
+    }
   }, []);
+
   function handleChange(e) {
     const model = e.target.value;
     updateModel(model);
@@ -32,10 +43,10 @@ export default function MainScreen() {
     const brand = e.target.value;
     updateBrand(brand);
   }
-  function onMouseOver(e) {
-    console.log(e.target);
-    const hoverData = e.target.value;
-    console.log(hoverData);
+  function onMouseOver(e, index) {
+    console.log(index);
+    const resultRow = mobiles[index];
+    updateRes(resultRow);
   }
   return (
     <div className="container">
@@ -82,17 +93,21 @@ export default function MainScreen() {
             <tbody>
               {mobiles.map((item, index) => {
                 return (
-                  <tr key={index} value={index} onClick={onMouseOver}>
-                    <td value={index} name="index">
+                  <tr
+                    key={index}
+                    value={index}
+                    onMouseEnter={() => onMouseOver(this, index)}
+                  >
+                    <td data={index} key={index} name="index">
                       {index}
                     </td>
-                    <td value={item.brand} name="brand">
+                    <td data={index} name="brand">
                       {item.brand}
                     </td>
-                    <td value={item.model} name="model">
+                    <td data={index} name="model">
                       {item.model}
                     </td>
-                    <td value={item.year} name="year">
+                    <td data={index} name="year">
                       {item.year}
                     </td>
                   </tr>
@@ -100,9 +115,25 @@ export default function MainScreen() {
               })}
             </tbody>
           </table>
+          {Object.keys(resultRoww).length ? (
+            <div className="card mb-5">
+              <div className="card-body">
+                <h5 className="card-title">Model : {resultRoww.model}</h5>
+                <p className="card-text">
+                  Year : {resultRoww.year}
+                  <br></br>
+                  Brand : {resultRoww.brand}
+                  <br></br>
+                  Memory : {resultRoww.memory}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
         <div className="col-4 mt-5 pt-5">
-          <BarChart countArrayy={count} />
+          <BarChart count={count} />
           <DonutChart />
         </div>
       </div>
